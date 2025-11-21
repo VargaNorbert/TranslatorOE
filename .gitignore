@@ -1,0 +1,20 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build output
+frontend/build/
+dist/
+api/*.zip
+
+# Azure Functions
+api/.funcignore
+api/local.settings.json
+
+# Logs
+logs/
+*.log
+
+# VS Code
+.vscode/
