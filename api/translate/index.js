@@ -33,11 +33,9 @@ module.exports = async function (context, req) {
       }
     );
 
-    // Check if translation exists
     const translated = tResponse.data?.[0]?.translations?.[0]?.text;
     if (!translated) throw new Error("No translation returned");
 
-    // Upload to Azure Blob
     const blobConn = process.env.BLOB_CONNECTION_STRING;
     const blobService = BlobServiceClient.fromConnectionString(blobConn);
     const container = blobService.getContainerClient("output-files");

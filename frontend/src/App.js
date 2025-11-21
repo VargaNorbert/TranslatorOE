@@ -17,7 +17,6 @@ function App() {
         body: JSON.stringify({ text, lang }),
       });
 
-      // Check if response has JSON
       const contentType = res.headers.get("content-type");
       let data;
       if (contentType && contentType.includes("application/json")) {
