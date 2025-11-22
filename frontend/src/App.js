@@ -57,7 +57,7 @@ function App() {
         <option value="de">Német</option>
         <option value="fr">Francia</option>
         <option value="es">Spanyol</option>
-        <option value="es">Mandarin</option>
+        <option value="zh-CN">Mandarin</option>
       </select>
 
       <br /><br />
