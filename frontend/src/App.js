@@ -1,37 +1,41 @@
 import React, { useState } from "react";
 
 function App() {
-  const [text, setText] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
   const [lang, setLang] = useState("en");
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
+
+  const backendUrl =
+    "https://translator-backend-oe-h9f5g5g0ekdzbrfe.westeurope-01.azurewebsites.net/translate";
 
   const handleTranslate = async () => {
     setResult("");
     setError("");
 
+    if (!selectedFile) {
+      setError("Kérlek válassz ki egy fájlt!");
+      return;
+    }
+
     try {
-      const res = await fetch("/api/translate", {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+      formData.append("lang", lang);
+
+      const res = await fetch(backendUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lang }),
+        body: formData,
       });
 
-      const contentType = res.headers.get("content-type");
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        data = await res.json();
-      } else {
-        throw new Error("Server returned invalid response");
-      }
+      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Translation failed");
+        throw new Error(data.detail || "Fordítás sikertelen");
       }
 
       setResult(data.translated);
     } catch (err) {
-      console.error(err);
       setError(err.message);
     }
   };
@@ -40,12 +44,10 @@ function App() {
     <div style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
       <h1>Azure Fordító App</h1>
 
-      <textarea
-        rows="6"
-        style={{ width: "100%" }}
-        placeholder="Írd be a szöveget…"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+      <input
+        type="file"
+        accept=".txt,.json"
+        onChange={(e) => setSelectedFile(e.target.files[0])}
       />
 
       <br /><br />
@@ -64,11 +66,7 @@ function App() {
       <h2>Eredmény:</h2>
       <pre>{result}</pre>
 
-      {error && (
-        <p style={{ color: "red" }}>
-          Hiba: {error}
-        </p>
-      )}
+      {error && <p style={{ color: "red" }}>Hiba: {error}</p>}
     </div>
   );
 }
